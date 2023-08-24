@@ -1,0 +1,44 @@
+name: ringoqr
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.0-310.0.dev <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.2
+  flutter_secure_storage: ^8.0.0
+  mobile_scanner: ^3.4.1
+  http: ^1.1.0
+  flutter_launcher_icons: ^0.13.1
+  status_alert: ^1.0.1
+  sign_in_with_apple: ^5.0.0
+  google_sign_in: ^6.1.4
+  action_slider: ^0.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo-ringo.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/icon/logo-ringo.png"
+    background_color: "#000000"
+    theme_color: "#000000"
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  assets:
+    - assets/
