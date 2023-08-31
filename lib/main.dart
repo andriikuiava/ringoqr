@@ -26,7 +26,17 @@ class MyApp extends StatelessWidget {
         future: doWhenLoad(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Container(
+              width: MediaQuery.of(context).size.width * 0.95,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error loading data');
           } else {

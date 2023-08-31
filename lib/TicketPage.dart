@@ -251,6 +251,26 @@ class _TicketPageState extends State<TicketPage> {
                               )
                           ),
                         ),
+                        const SizedBox(height: 7,),
+                        const Text("EXPIRES AT",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.grey,
+                              decoration: TextDecoration.none,
+                            )
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.87,
+                          child: Text(convertHourTimestamp(widget.ticket.expiryDate),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: currentTheme.primaryColor,
+                                decoration: TextDecoration.none,
+                              )
+                          ),
+                        ),
                         const SizedBox(height: 8,),
                       ],
                     ),

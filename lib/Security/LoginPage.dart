@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:ringoqr/AppTabBar/HomeScreen.dart';
 import 'package:ringoqr/main.dart';
 import 'dart:developer';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -113,88 +114,190 @@ class _MyHomePageState extends State<LoginPage> {
     final currentTheme = Theme.of(context);
     return CupertinoPageScaffold(
       backgroundColor: currentTheme.scaffoldBackgroundColor,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-            Row(
-              children: [
-                Spacer(),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Image.asset(
-                    currentTheme.brightness == Brightness.light
-                        ? 'assets/logo-ringo-w.png'
-                        : 'assets/logo-ringo.png',
-                    width: 200,
-                    height: 200,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+              Row(
+                children: [
+                  Spacer(),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.asset(
+                      currentTheme.brightness == Brightness.light
+                          ? 'assets/logo-ringo-w.png'
+                          : 'assets/logo-ringo.png',
+                      width: 200,
+                      height: 200,
+                    ),
+                  ),
+                  Spacer(),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Login to RingoQR',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: currentTheme.primaryColor,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+              const SizedBox(height: 40),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.90,
+                child: CupertinoTextField(
+                  maxLength: 256,
+                  controller: _emailController,
+                  placeholder: 'Enter your email',
+                  padding: EdgeInsets.all(20),
+                  clearButtonMode: OverlayVisibilityMode.editing,
+                  cursorColor: currentTheme.primaryColor,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: BoxDecoration(
+                    color: currentTheme.backgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  style: TextStyle(
+                    color: currentTheme.primaryColor,
+                    fontSize: 16,
                   ),
                 ),
-                Spacer(),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Login to RingoQR',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: currentTheme.primaryColor,
-                decoration: TextDecoration.none,
               ),
-            ),
-            const SizedBox(height: 40),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.90,
-              child: CupertinoTextField(
-                maxLength: 256,
-                controller: _emailController,
-                placeholder: 'Enter your email',
-                padding: EdgeInsets.all(20),
-                clearButtonMode: OverlayVisibilityMode.editing,
-                cursorColor: currentTheme.primaryColor,
-                keyboardType: TextInputType.emailAddress,
-                decoration: BoxDecoration(
+              const SizedBox(height: 20),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.90,
+                child: CupertinoTextField(
+                  maxLength: 64,
+                  controller: _passwordController,
+                  placeholder: 'Enter your password',
+                  padding: EdgeInsets.all(20),
+                  clearButtonMode: OverlayVisibilityMode.editing,
+                  cursorColor: currentTheme.primaryColor,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  decoration: BoxDecoration(
+                    color: currentTheme.backgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  style: TextStyle(
+                    color: currentTheme.primaryColor,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.90,
+                child: CupertinoButton(
+                  onPressed: () {
+                    login(_emailController.text, _passwordController.text);
+                  },
+                  child: Text(
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: currentTheme.primaryColor,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
                   color: currentTheme.backgroundColor,
                   borderRadius: BorderRadius.circular(10),
-                ),
-                style: TextStyle(
-                  color: currentTheme.primaryColor,
-                  fontSize: 16,
+                  padding: EdgeInsets.all(20),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.90,
-              child: CupertinoTextField(
-                maxLength: 64,
-                controller: _passwordController,
-                placeholder: 'Enter your password',
-                padding: EdgeInsets.all(20),
-                clearButtonMode: OverlayVisibilityMode.editing,
-                cursorColor: currentTheme.primaryColor,
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
-                decoration: BoxDecoration(
+              const SizedBox(height: 20),
+              Divider(
+                color: currentTheme.backgroundColor,
+                thickness: 1,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.90,
+                child: CupertinoButton(
                   color: currentTheme.backgroundColor,
                   borderRadius: BorderRadius.circular(10),
-                ),
-                style: TextStyle(
-                  color: currentTheme.primaryColor,
-                  fontSize: 16,
+                  padding: EdgeInsets.all(20),
+                  onPressed: signInWithGoogle,
+                  child: Row(
+                    children: [
+                      Spacer(),
+                      Image.asset(
+                        'assets/google-logo.png',
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Login with Google',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: currentTheme.primaryColor,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      Spacer(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.90,
-              child: CupertinoButton(
-                onPressed: () {
-                  login(_emailController.text, _passwordController.text);
-                },
+              const SizedBox(height: 20),
+              if (Platform.isIOS)
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.90,
+                  height: 60,
+                  child: SignInWithAppleButton(
+                    style: currentTheme.brightness == Brightness.light
+                        ? SignInWithAppleButtonStyle.black
+                        : SignInWithAppleButtonStyle.white,
+                    onPressed: () async {
+                      const storage = FlutterSecureStorage();
+                      final credential = await SignInWithApple.getAppleIDCredential(
+                        scopes: [
+                          AppleIDAuthorizationScopes.email,
+                          AppleIDAuthorizationScopes.fullName,
+                        ],
+                      );
+                      var idToken = credential.identityToken;
+                      var url = Uri.parse('${ApiEndpoints.LOGIN_APPLE}');
+                      var headers = {'Content-Type': 'application/json'};
+                      var body = jsonEncode({'idToken': idToken});
+                      var response = await http.post(url, headers: headers, body: body);
+                      if (response.statusCode == 200) {
+                        final jsonResponse = customJsonDecode(response.body);
+                        DateTime currentTime = DateTime.now();
+                        DateTime futureTime =
+                        currentTime.add(const Duration(seconds: 30));
+                        storage.write(
+                            key: "timestamp",
+                            value: futureTime.toString());
+                        storage.write(
+                            key: "access_token",
+                            value: jsonResponse['accessToken']);
+                        storage.write(
+                            key: "refresh_token",
+                            value: jsonResponse['refreshToken']);
+                        Navigator.of(context, rootNavigator: true).pushReplacement(
+                            MaterialPageRoute(builder: (_) => const AppTabBar()));
+                      }
+                      else {
+                        showErrorAlert("Unable to login", "Check your password and try again", context);
+                        throw Exception('Failed to login');
+                      }
+                    },
+                  ),
+                ),
+              const SizedBox(height: 10),
+              CupertinoButton(
                 child: Text(
-                  'Login',
+                  "Register an organisation",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -202,94 +305,13 @@ class _MyHomePageState extends State<LoginPage> {
                     decoration: TextDecoration.none,
                   ),
                 ),
-                color: currentTheme.backgroundColor,
-                borderRadius: BorderRadius.circular(10),
-                padding: EdgeInsets.all(20),
+                onPressed: () {
+                  launch("http://www.kimroh.com");
+                }
               ),
-            ),
-            const SizedBox(height: 20),
-            Divider(
-              color: currentTheme.backgroundColor,
-              thickness: 1,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.90,
-              child: CupertinoButton(
-                color: currentTheme.backgroundColor,
-                borderRadius: BorderRadius.circular(10),
-                padding: EdgeInsets.all(20),
-                onPressed: signInWithGoogle,
-                child: Row(
-                  children: [
-                    Spacer(),
-                    Image.asset(
-                      'assets/google-logo.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Login with Google',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: currentTheme.primaryColor,
-                        decoration: TextDecoration.none,
-                      ),
-                    ),
-                    Spacer(),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (Platform.isIOS)
-              Container(
-                width: MediaQuery.of(context).size.width * 0.90,
-                height: 60,
-                child: SignInWithAppleButton(
-                  style: currentTheme.brightness == Brightness.light
-                      ? SignInWithAppleButtonStyle.black
-                      : SignInWithAppleButtonStyle.white,
-                  onPressed: () async {
-                    const storage = FlutterSecureStorage();
-                    final credential = await SignInWithApple.getAppleIDCredential(
-                      scopes: [
-                        AppleIDAuthorizationScopes.email,
-                        AppleIDAuthorizationScopes.fullName,
-                      ],
-                    );
-                    var idToken = credential.identityToken;
-                    var url = Uri.parse('${ApiEndpoints.LOGIN_APPLE}');
-                    var headers = {'Content-Type': 'application/json'};
-                    var body = jsonEncode({'idToken': idToken});
-                    var response = await http.post(url, headers: headers, body: body);
-                    if (response.statusCode == 200) {
-                      final jsonResponse = customJsonDecode(response.body);
-                      DateTime currentTime = DateTime.now();
-                      DateTime futureTime =
-                      currentTime.add(const Duration(seconds: 30));
-                      storage.write(
-                          key: "timestamp",
-                          value: futureTime.toString());
-                      storage.write(
-                          key: "access_token",
-                          value: jsonResponse['accessToken']);
-                      storage.write(
-                          key: "refresh_token",
-                          value: jsonResponse['refreshToken']);
-                      Navigator.of(context, rootNavigator: true).pushReplacement(
-                          MaterialPageRoute(builder: (_) => const AppTabBar()));
-                    }
-                    else {
-                      showErrorAlert("Unable to login", "Check your password and try again", context);
-                      throw Exception('Failed to login');
-                    }
-                  },
-                ),
-              ),
-          ],
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

@@ -251,7 +251,14 @@ class _ListViewPageState extends State<ListViewPage> {
               },
             );
           } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
+            return Text(
+                "Error loading events",
+              style: TextStyle(
+                color: Colors.grey,
+                decoration: TextDecoration.none,
+                fontSize: 20,
+              ),
+            );
           }
           return Center(
             child: CircularProgressIndicator(
