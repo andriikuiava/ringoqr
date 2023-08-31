@@ -12,6 +12,7 @@ import 'package:ringoqr/Classes/LoginCredentials.dart';
 import 'package:http/http.dart' as http;
 import 'package:ringoqr/AppTabBar/HomeScreen.dart';
 import 'package:ringoqr/main.dart';
+import 'dart:developer';
 
 
 class LoginPage extends StatefulWidget {
@@ -40,6 +41,8 @@ class _MyHomePageState extends State<LoginPage> {
     var headers = {'Content-Type': 'application/json'};
     var response = await http.post(url, headers: headers, body: jsonBody);
     const storage = FlutterSecureStorage();
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 200) {
       final jsonResponse = customJsonDecode(response.body);
       DateTime currentTime = DateTime.now();
@@ -69,7 +72,6 @@ class _MyHomePageState extends State<LoginPage> {
       GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email'],
           clientId: "445780816677-on7ff5l41ig1ervle491sc7vuvg4n5ro.apps.googleusercontent.com");
       GoogleSignInAccount? account = await googleSignIn.signIn();
-
       if (account != null) {
         GoogleSignInAuthentication authentication = await account
             .authentication;
@@ -251,6 +253,7 @@ class _MyHomePageState extends State<LoginPage> {
                       ? SignInWithAppleButtonStyle.black
                       : SignInWithAppleButtonStyle.white,
                   onPressed: () async {
+                    const storage = FlutterSecureStorage();
                     final credential = await SignInWithApple.getAppleIDCredential(
                       scopes: [
                         AppleIDAuthorizationScopes.email,
@@ -258,6 +261,31 @@ class _MyHomePageState extends State<LoginPage> {
                       ],
                     );
                     var idToken = credential.identityToken;
+                    var url = Uri.parse('${ApiEndpoints.LOGIN_APPLE}');
+                    var headers = {'Content-Type': 'application/json'};
+                    var body = jsonEncode({'idToken': idToken});
+                    var response = await http.post(url, headers: headers, body: body);
+                    if (response.statusCode == 200) {
+                      final jsonResponse = customJsonDecode(response.body);
+                      DateTime currentTime = DateTime.now();
+                      DateTime futureTime =
+                      currentTime.add(const Duration(seconds: 30));
+                      storage.write(
+                          key: "timestamp",
+                          value: futureTime.toString());
+                      storage.write(
+                          key: "access_token",
+                          value: jsonResponse['accessToken']);
+                      storage.write(
+                          key: "refresh_token",
+                          value: jsonResponse['refreshToken']);
+                      Navigator.of(context, rootNavigator: true).pushReplacement(
+                          MaterialPageRoute(builder: (_) => const AppTabBar()));
+                    }
+                    else {
+                      showErrorAlert("Unable to login", "Check your password and try again", context);
+                      throw Exception('Failed to login');
+                    }
                   },
                 ),
               ),

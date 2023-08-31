@@ -42,36 +42,42 @@ class _TicketListState extends State<TicketList> {
       child: ListView.builder(
         itemCount: widget.tickets.length,
         itemBuilder: (context, index) {
-          return Card(
-            color: currentTheme.backgroundColor,
-            child: ListTile(
-              title: Text(widget.tickets[index].participant.name,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                   color: currentTheme.primaryColor,
-                ),
-              ),
-              subtitle: Text("Was bought ${convertTimestamp(widget.tickets[index].timeOfSubmission)}",
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    CupertinoIcons.circle_fill,
-                    size: 10,
-                    color: widget.tickets[index].isValidated ? Colors.red : Colors.green,
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              elevation: 0,
+              color: currentTheme.backgroundColor,
+              child: ListTile(
+                title: Text("${widget.tickets[index].participant.name}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: currentTheme.primaryColor,
+                    fontSize: 18,
                   ),
-                  const SizedBox(width: 5),
-                  Text(widget.tickets[index].isValidated ? "Validated" : "Not Validated",
+                ),
+                subtitle: Text("Issued at ${convertTimestamp(widget.tickets[index].timeOfSubmission)}",
                   style: TextStyle(
                     color: Colors.grey,
-                    fontSize: 10,
+                    fontSize: 14,
                   ),
-                  ),
-                ],
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      CupertinoIcons.circle_fill,
+                      size: 10,
+                      color: widget.tickets[index].isValidated ? Colors.red : Colors.green,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(widget.tickets[index].isValidated ? "Validated" : "Not Validated",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

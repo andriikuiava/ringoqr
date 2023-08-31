@@ -5,6 +5,7 @@ import 'dart:convert';
 
 class ApiEndpoints {
   static const String BASE_URL = "http://localhost:8080/api";
+  // static const String BASE_URL = "http://18.194.208.48:8080/api";
 
   //LOGIN/REGISTER
   static const String LOGIN_RINGO = "$BASE_URL/auth/login";

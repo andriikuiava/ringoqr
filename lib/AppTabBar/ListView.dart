@@ -100,7 +100,7 @@ class _ListViewPageState extends State<ListViewPage> {
         ),
         trailing: CupertinoButton(
           child: Icon(
-            CupertinoIcons.list_bullet,
+            CupertinoIcons.clock,
             color: currentTheme.primaryColor,
           ),
           onPressed: () {
@@ -123,104 +123,118 @@ class _ListViewPageState extends State<ListViewPage> {
               itemBuilder: (context, index) {
                 if (index < snapshot.data!.length) {
                   var event = snapshot.data![index];
-                  return Card(
-                    color: currentTheme.backgroundColor,
-                    child: Container(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                "${ApiEndpoints.GET_PHOTO}/${event.mainPhotoId}",
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                event.name,
-                                style: TextStyle(
-                                  color: currentTheme.primaryColor,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      elevation: 0,
+                      color: currentTheme.backgroundColor,
+                      child: Container(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network(
+                                  "${ApiEndpoints.GET_PHOTO}/${event.mainPhotoId}",
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.calendar_today,
-                                    color: Colors.grey,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    convertHourTimestamp(event.startTime!),
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.person_2_fill,
-                                    color: Colors.grey,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "${event.peopleCount} / ${event.capacity}",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Spacer(),
-                          CupertinoButton(
-                            child: Icon(
-                              CupertinoIcons.chevron_right,
-                              color: Colors.grey,
                             ),
-                            onPressed: () async {
-                              await checkTimestamp();
-                              var storage = FlutterSecureStorage();
-                              var token = await storage.read(key: "access_token");
-                              var url = Uri.parse('${ApiEndpoints.GET_TICKETS}/${event.id}');
-                              var headers = {
-                                'Content-Type' : 'application/json',
-                                'Authorization': 'Bearer $token'
-                              };
-                              var response = await http.get(url, headers: headers);
-                              if (response.statusCode == 200) {
-                                var jsonResponse = customJsonDecode(response.body);
-                                List<Ticket> tickets = [];
-                                for (var ticket in jsonResponse) {
-                                  tickets.add(Ticket.fromJson(ticket));
-                                }
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (context) => TicketList(tickets: tickets),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.5,
+                                  child: Text(
+                                    event.name,
+                                    style: TextStyle(
+                                      color: currentTheme.primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                );
-                              } else {
-                                throw Exception("Failed to load tickets");
-                              }
-                            },
-                          ),
-                        ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.calendar_today,
+                                      color: Colors.grey,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.45,
+                                      child: Text(
+                                        convertHourTimestamp(event.startTime!),
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.person_2_fill,
+                                      color: Colors.grey,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      "${event.peopleCount} / ${event.capacity}",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            CupertinoButton(
+                              child: Icon(
+                                CupertinoIcons.chevron_right,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () async {
+                                await checkTimestamp();
+                                var storage = FlutterSecureStorage();
+                                var token = await storage.read(key: "access_token");
+                                var url = Uri.parse('${ApiEndpoints.GET_TICKETS}/${event.id}');
+                                var headers = {
+                                  'Content-Type' : 'application/json',
+                                  'Authorization': 'Bearer $token'
+                                };
+                                var response = await http.get(url, headers: headers);
+                                if (response.statusCode == 200) {
+                                  var jsonResponse = customJsonDecode(response.body);
+                                  List<Ticket> tickets = [];
+                                  for (var ticket in jsonResponse) {
+                                    try {
+                                      tickets.add(Ticket.fromJson(ticket));
+                                    } catch (e) {
+                                      print("Error parsing ticket: $e");
+                                    }
+                                  }
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (context) => TicketList(tickets: tickets),
+                                    ),
+                                  );
+                                } else {
+                                  throw Exception("Failed to load tickets");
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
