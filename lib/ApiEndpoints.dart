@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 
 class ApiEndpoints {
-  // static const String BASE_URL = "http://localhost:8080/api";
-  static const String BASE_URL = "http://18.194.208.48:8080/api";
+  static const String BASE_URL = "http://localhost:8080/api";
+  // static const String BASE_URL = "http://18.194.208.48:8080/api";
 
   //LOGIN/REGISTER
   static const String LOGIN_RINGO = "$BASE_URL/auth/login";
@@ -68,47 +68,47 @@ void showErrorAlert(String? title, String? message, context) {
 }
 
 String convertHourTimestamp(String timestamp) {
-  DateTime parsedDateTime = DateTime.parse(timestamp);
+  DateTime parsedDateTime = DateTime.parse('${timestamp}Z').toLocal();
   String formattedDate = parsedDateTime.day.toString();
   String formattedTime = '${parsedDateTime.hour.toString().padLeft(2, '0')}:${parsedDateTime.minute.toString().padLeft(2, '0')}';
   String formattedMonth;
 
   switch (parsedDateTime.month) {
     case 1:
-      formattedMonth = 'January';
+      formattedMonth = 'Jan';
       break;
     case 2:
-      formattedMonth = 'February';
+      formattedMonth = 'Feb';
       break;
     case 3:
-      formattedMonth = 'March';
+      formattedMonth = 'Mar';
       break;
     case 4:
-      formattedMonth = 'April';
+      formattedMonth = 'Apr';
       break;
     case 5:
       formattedMonth = 'May';
       break;
     case 6:
-      formattedMonth = 'June';
+      formattedMonth = 'Jun';
       break;
     case 7:
-      formattedMonth = 'July';
+      formattedMonth = 'Jul';
       break;
     case 8:
-      formattedMonth = 'August';
+      formattedMonth = 'Aug';
       break;
     case 9:
-      formattedMonth = 'September';
+      formattedMonth = 'Sep';
       break;
     case 10:
-      formattedMonth = 'October';
+      formattedMonth = 'Oct';
       break;
     case 11:
-      formattedMonth = 'November';
+      formattedMonth = 'Nov';
       break;
     case 12:
-      formattedMonth = 'December';
+      formattedMonth = 'Dec';
       break;
     default:
       formattedMonth = '';
@@ -119,19 +119,15 @@ String convertHourTimestamp(String timestamp) {
   return formattedTimestamp;
 }
 
-String convertTimestamp(String timestamp) {
-  // Parse the input timestamp
-  DateTime dateTime = DateTime.parse(timestamp);
+bool isTimestampInThePast(String timestamp) {
+  DateTime parsedDateTimeStart = DateTime.parse('${timestamp}Z').toLocal();
+  parsedDateTimeStart = parsedDateTimeStart.add(Duration(hours: 3));
+  DateTime now = DateTime.now();
+  DateTime today = DateTime.parse(timestamp);
 
-  // Define the month names
-  List<String> monthNames = [
-    '', // To match index with month number
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
-  // Format the output string
-  String output = '${monthNames[dateTime.month]} ${dateTime.day}, ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-
-  return output;
+  if (now.isAfter(today)) {
+    return true;
+  } else {
+    return false;
+  }
 }

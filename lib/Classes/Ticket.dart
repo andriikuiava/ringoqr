@@ -1,5 +1,6 @@
 import 'package:ringoqr/Classes/Event.dart';
 import 'package:ringoqr/Classes/Participant.dart';
+import 'package:ringoqr/Classes/Currency.dart';
 
 class Ticket {
   Participant participant;
@@ -7,6 +8,7 @@ class Ticket {
   String timeOfSubmission;
   String expiryDate;
   bool isValidated;
+  TicketType? ticketType;
   String? ticketCode;
   RegistrationForm? registrationForm;
   RegistrationSubmission? registrationSubmission;
@@ -18,6 +20,7 @@ class Ticket {
     required this.timeOfSubmission,
     required this.expiryDate,
     required this.isValidated,
+    this.ticketType,
     this.ticketCode,
     this.registrationForm,
     this.registrationSubmission
@@ -30,6 +33,7 @@ class Ticket {
       timeOfSubmission: json['timeOfSubmission'],
       expiryDate: json['expiryDate'],
       isValidated: json['isValidated'],
+      ticketType: json['ticketType'] != null ? TicketType.fromJson(json['ticketType']) : null,
       ticketCode: json['ticketCode'],
       registrationForm: json['registrationForm'] != null ? RegistrationForm.fromJson(json['registrationForm']) : null,
       registrationSubmission: json['registrationSubmission'] != null ? RegistrationSubmission.fromJson(json['registrationSubmission']) : null,
@@ -67,6 +71,40 @@ class RegistrationCredentials {
   }
 }
 
+class TicketType {
+  int id;
+  String title;
+  String? description;
+  double price;
+  Currency currency;
+  int peopleCount;
+  int? maxTickets;
+  String? salesStopTime;
+
+  TicketType({
+    required this.id,
+    required this.title,
+    this.description,
+    required this.price,
+    required this.currency,
+    required this.peopleCount,
+    this.maxTickets,
+    this.salesStopTime,
+  });
+
+  factory TicketType.fromJson(Map<String, dynamic> json) {
+    return TicketType(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      price: json['price'],
+      currency: Currency.fromJson(json['currency']),
+      peopleCount: json['peopleCount'],
+      maxTickets: json['maxTickets'],
+      salesStopTime: json['salesStopTime'],
+    );
+  }
+}
 
 class RegistrationForm {
   String title;

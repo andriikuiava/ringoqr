@@ -110,7 +110,7 @@ class _TicketPageState extends State<TicketPage> {
                               const SizedBox(height: 2,),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.5,
-                                child: Text("${widget.ticket.event!.peopleCount}/${widget.ticket.event!.capacity} people are going",
+                                child: Text("${widget.ticket.ticketType!.title}",
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
